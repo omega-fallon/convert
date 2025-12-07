@@ -5,6 +5,8 @@ import {
   MagickFormat
 } from "/node_modules/@imagemagick/magick-wasm/dist/index.js";
 
+import mime from "/node_modules/mime/dist/src/index.js";
+
 let supportedFormats = [];
 
 async function init () {
@@ -17,7 +19,9 @@ async function init () {
     supportedFormats.push({
       name: format.description,
       format: format.format,
-      extension: format.mimeType?.split("/")?.pop() || format.format,
+      extension: mime.getExtension(format.mimeType) ||
+        format.mimeType?.split("/")?.pop() ||
+        format.format,
       mime: format.mimeType,
       from: format.supportsReading,
       to: format.supportsWriting,

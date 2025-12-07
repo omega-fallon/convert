@@ -1,6 +1,8 @@
 import { fetchFile } from "/node_modules/@ffmpeg/util/dist/esm/index.js";
 import { FFmpeg } from "/node_modules/@ffmpeg/ffmpeg/dist/esm/index.js";
 
+import mime from "/node_modules/mime/dist/src/index.js";
+
 let ffmpeg;
 
 let supportedFormats = [];
@@ -37,7 +39,7 @@ async function init () {
       name: description,
       format: parts[1],
       extension: extension,
-      mime: "video/" + extension,
+      mime: mime.getType(extension) || ("video/" + extension),
       from: flags.includes("D"),
       to: flags.includes("E"),
       internal: extension
