@@ -116,18 +116,15 @@ function buildOptionList () {
 
       if (!format.mime) continue;
 
-      // In simple mode, display each input/output MIME type only once
-      let displayOption = true;
-
-      if (simpleMode) {
-        const duplicateMimeTypes = allOptions.filter(c => c.format.mime === format.mime);
-        displayOption = (format.to && !duplicateMimeTypes.some(c => c.format.to)) ||
-          (format.from && !duplicateMimeTypes.some(c => c.format.from));
-      }
-
       allOptions.push({ format, handler });
 
-      if (!displayOption) continue;
+      // In simple mode, display each input/output MIME type only once
+      if (simpleMode) {
+        if (
+          (format.from && Array.from(inputList.children).some(c => c.getAttribute("mime-type") === format.mime)) ||
+          (format.to && Array.from(outputList.children).some(c => c.getAttribute("mime-type") === format.mime))
+        ) continue;
+      }
 
       const newOption = document.createElement("button");
       newOption.setAttribute("format-index", allOptions.length - 1);
