@@ -12,10 +12,6 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "favicon.ico",
-          dest: "assets"
-        },
-        {
           src: "node_modules/@ffmpeg/core/dist/esm/ffmpeg-core.*",
           dest: "wasm"
         },
