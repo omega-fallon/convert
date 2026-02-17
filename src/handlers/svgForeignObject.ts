@@ -7,7 +7,7 @@ class svgForeignObjectHandler implements FormatHandler {
 
   public supportedFormats: FileFormat[] = [
     CommonFormats.HTML.supported("html", true, false),
-    CommonFormats.SVG.supported("svg", false, true),
+    CommonFormats.SVG.supported("svg", false, true)
   ];
 
   public ready: boolean = true;
