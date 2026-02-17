@@ -15,15 +15,7 @@ class htmlEmbedHandler implements FormatHandler {
       internal: "html"
     },
     CommonFormats.PNG.supported("png", true, false),
-    {
-      name: "Joint Photographic Experts Group JFIF",
-      format: "jpeg",
-      extension: "jpg",
-      mime: "image/jpeg",
-      from: true,
-      to: false,
-      internal: "jpeg"
-    },
+    CommonFormats.JPEG.supported("jpeg", true, false),
     {
       name: "WebP",
       format: "webp",

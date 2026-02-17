@@ -8,15 +8,7 @@ class canvasToBlobHandler implements FormatHandler {
 
   public supportedFormats: FileFormat[] = [
     CommonFormats.PNG.supported("png", true, true),
-    {
-      name: "Joint Photographic Experts Group JFIF",
-      format: "jpeg",
-      extension: "jpg",
-      mime: "image/jpeg",
-      from: true,
-      to: true,
-      internal: "jpeg"
-    },
+    CommonFormats.JPEG.supported("jpeg", true, true),
     {
       name: "WebP",
       format: "webp",
