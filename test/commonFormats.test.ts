@@ -17,6 +17,7 @@ declare global {
 const server = Bun.serve({
   async fetch (req) {
     let path = new URL(req.url).pathname.replace("/convert/", "") || "index.html";
+    path = path.replaceAll("..", "");
     if (path.startsWith("/test/")) path = "../test/resources/" + path.slice(6);
     const file = Bun.file(`${__dirname}/../dist/${path}`);
     if (!(await file.exists())) return new Response("Not Found", { status: 404 });
