@@ -68,9 +68,10 @@ class curaniHandler implements FormatHandler {
                     let i = 0;
 
                     // Finds where the first ICO header is
-                    while (header_hook === 0) {
-                        if (new_file_bytes[i] == 0x28 && new_file_bytes[i+1] == 0x0 && new_file_bytes[i+2] == 0x0 && new_file_bytes[i+3] == 0x0 && new_file_bytes[i+4] == 0x20 && new_file_bytes[i+5] == 0x0 && new_file_bytes[i+6] == 0x0 && new_file_bytes[i+7] == 0x0 && new_file_bytes[i+8] == 0x40) {
+                    while (true) {
+                        if (new_file_bytes[i] == 0x69 && new_file_bytes[i+1] == 0x63 && new_file_bytes[i+2] == 0x6F && new_file_bytes[i+3] == 0x6E && new_file_bytes[i+4] == 0xBE) {
                             header_hook = i;
+                            break;
                         }
                         
                         if (i > new_file_bytes.length) {
@@ -80,10 +81,27 @@ class curaniHandler implements FormatHandler {
                     }
 
                     // Gets the real start of the ICO
-                    let ico_start = i-23;
+                    let ico_start = i+8;
+                    let ico_distance = 0x10BE;
+                    let header_hook_2 = 0;
+
+                    // Finds the NEXT ICO header
+                    i = header_hook+1;
+                    while (true) {
+                        if (new_file_bytes[i] == 0x69 && new_file_bytes[i+1] == 0x63 && new_file_bytes[i+2] == 0x6F && new_file_bytes[i+3] == 0x6E && new_file_bytes[i+4] == 0xBE) {
+                            header_hook_2 = i;
+                            //ico_distance = header_hook_2 - header_hook - 8 - 1;
+                            break;
+                        }
+                        
+                        if (i+5 > new_file_bytes.length) {
+                            break;
+                        }
+                        i += 1;
+                    }
 
                     // I don't think this magic 0x10BE number works for differently-sized .ani files....
-                    new_file_bytes = new_file_bytes.subarray(ico_start,ico_start+0x10BE);
+                    new_file_bytes = new_file_bytes.subarray(ico_start,ico_start+ico_distance);
                 }
                 else if (outputFormat.internal === "ico") {
                     throw new Error("Refuse to convert from .ani directly to .ico; must use .cur as an intermediary.");
