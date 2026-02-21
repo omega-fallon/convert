@@ -21,7 +21,7 @@ class bunburrowsHandler implements FormatHandler {
         this.supportedFormats = [
             CommonFormats.PNG.supported("png", true, true, false),
             {
-                name: "Bunburrows Level File",
+                name: "Pâquerette: Down the Bunburrows Level File",
                 format: "bunlevel",
                 extension: "level",
                 mime: "application/x-bunburrows-level",
