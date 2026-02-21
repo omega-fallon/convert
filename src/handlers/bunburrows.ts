@@ -67,16 +67,16 @@ class bunburrowsHandler implements FormatHandler {
                 const rgba: number[] = []
                 for (let i = 0; i < this.#canvas.width * this.#canvas.height; i++) {
                     // What pixel are we on?
-                    const i_x : int = i % this.#canvas.width;
-                    const i_y : int = Math.floor(i / this.#canvas.width);
+                    const i_x = i % this.#canvas.width;
+                    const i_y = Math.floor(i / this.#canvas.width);
 
                     // What tile are we on?
-                    const current_tile_x : int = Math.floor(i_x / scale);
-                    const current_tile_y : int = Math.floor(i_y / scale);
+                    const current_tile_x = Math.floor(i_x / scale);
+                    const current_tile_y = Math.floor(i_y / scale);
 
                     // What pixel are we on, relative to the tile?
-                    const tile_pixel_x : int = i_x % scale;
-                    const tile_pixel_y : int = i_y % scale;
+                    const tile_pixel_x = i_x % scale;
+                    const tile_pixel_y = i_y % scale;
 
                     // The string describing the current tile's data.
                     const current_tile_data : string = level_data_array[current_tile_y*(this.#canvas.width/scale) + current_tile_x];
