@@ -57,7 +57,8 @@ class curaniHandler implements FormatHandler {
         outputFormat: FileFormat
     ): Promise<FileData[]> {
         const outputFiles: FileData[] = [];
-
+        const ani_separator_bytes = new Uint8Array([0x69,0x63,0x6F,0x6E,0xBE,0x10,0x00,0x00]);
+        
         for (const file of inputFiles) {
             let new_file_bytes = new Uint8Array(file.bytes);
 
@@ -81,7 +82,7 @@ class curaniHandler implements FormatHandler {
                     }
 
                     // Gets the real start of the ICO
-                    const ico_start_offset = 8;
+                    const ico_start_offset = ani_separator_bytes.length;
                     let ico_start = i+ico_start_offset;
 
                     // Finds the NEXT ICO header to determine file size
@@ -111,6 +112,10 @@ class curaniHandler implements FormatHandler {
                     else {
                         new_file_bytes = new_file_bytes.subarray(ico_start,ico_start+ico_distance);
                     }
+                }
+                else if (outputFormat.internal === "apng") {
+                    // To be added!
+                    throw new Error("Invalid output format.");
                 }
                 else if (outputFormat.internal === "ico") {
                     throw new Error("Refuse to convert from .ani directly to .ico; must use .cur as an intermediary.");
