@@ -63,6 +63,11 @@ class bunburrowsHandler implements FormatHandler {
                 this.#canvas.width = 15*scale;
                 this.#canvas.height = 9*scale;
 
+                // Safety check
+                if (level_data_array.length < 15*9) {
+                    throw new Error("Invalid level file.");
+                }
+
                 // Determine color per-pixel
                 const rgba: number[] = []
                 for (let i = 0; i < this.#canvas.width * this.#canvas.height; i++) {
