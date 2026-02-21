@@ -81,16 +81,17 @@ class curaniHandler implements FormatHandler {
                     }
 
                     // Gets the real start of the ICO
-                    let ico_start = i+8;
+                    const ico_start_offset = 8;
+                    let ico_start = i+ico_start_offset;
+
+                    // Finds the NEXT ICO header to determine file size
                     let ico_distance = 0x10BE;
                     let header_hook_2 = 0;
-
-                    // Finds the NEXT ICO header
                     i = header_hook+1;
                     while (true) {
                         if (new_file_bytes[i] == 0x69 && new_file_bytes[i+1] == 0x63 && new_file_bytes[i+2] == 0x6F && new_file_bytes[i+3] == 0x6E && new_file_bytes[i+4] == 0xBE) {
                             header_hook_2 = i;
-                            ico_distance = header_hook_2 - header_hook - 8;
+                            ico_distance = header_hook_2 - header_hook - ico_start_offset;
                             break;
                         }
                         
@@ -100,7 +101,6 @@ class curaniHandler implements FormatHandler {
                         i += 1;
                     }
 
-                    // I don't think this magic 0x10BE number works for differently-sized .ani files....
                     new_file_bytes = new_file_bytes.subarray(ico_start,ico_start+ico_distance);
                 }
                 else if (outputFormat.internal === "ico") {
@@ -113,7 +113,13 @@ class curaniHandler implements FormatHandler {
             else if (inputFormat.internal === "cur") {
                 // Turn a static cur into a single-frame .ani
                 if (outputFormat.internal === "ani") {
-                    throw new Error("NEEDS TO BE IMPLEMENTED.");
+                    const ani_header = new Uint8Array([0x52,0x49,0x46,0x46,0xC8,0x21,0x00,0x00,0x41,0x43,0x4F,0x4E,0x61,0x6E,0x69,0x68,0x24,0x00,0x00,0x00,0x24,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0B,0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x4C,0x49,,0x54,0x90,0x21,0x00,0x00,0x66,0x72,0x61,0x6D,0x69,0x63,0x6F,0x6E,0xBE,0x10,0x00,0x00]);
+
+                    let mergedArray = new Uint8Array(ani_header.length + new_file_bytes.length);
+                    mergedArray.set(ani_header);
+                    mergedArray.set(new_file_bytes, ani_header.length);
+
+                    new_file_bytes = mergedArray;
                 }
                 // Convert a .cur into a .ico by removing hotspot and changing format header
                 else if (outputFormat.internal === "ico") {
