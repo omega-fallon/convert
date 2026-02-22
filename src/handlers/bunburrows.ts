@@ -59,12 +59,16 @@ class bunburrowsHandler implements FormatHandler {
                 console.log(String(level_data_array));
 
                 // Establish dimensions
-                let scale = 5;
-                this.#canvas.width = 15*scale;
-                this.#canvas.height = 9*scale;
+                const scale = 5;
+
+                const tiles_wide = 15;
+                const tiles_high = 9;
+
+                this.#canvas.width = tiles_wide*scale;
+                this.#canvas.height = tiles_high*scale;
 
                 // Safety check
-                if (level_data_array.length < 15*9) {
+                if (level_data_array.length < tiles_wide*tiles_high) {
                     throw new Error("Invalid level file.");
                 }
 
@@ -84,7 +88,7 @@ class bunburrowsHandler implements FormatHandler {
                     const tile_pixel_y = i_y % scale;
 
                     // The string describing the current tile's data.
-                    const current_tile_data : string = level_data_array[current_tile_y*(this.#canvas.width/scale) + current_tile_x];
+                    const current_tile_data : string = level_data_array[current_tile_y*tiles_wide + current_tile_x];
 
                     // Start drawing pixels!
                     console.log(current_tile_x + " , " + tile_pixel_y + " (" + i_x + " , " + i_y + ")");
