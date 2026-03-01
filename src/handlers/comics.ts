@@ -46,8 +46,9 @@ class comicsHandler implements FormatHandler {
             const zip = new JSZip();
             
             // Determine the archive name
-            const baseName = inputFiles[0].name.split(".").slice(0, -1).join(".");
+            const baseName = inputFiles[0].name.replace("_0."+inputFormat.extension,"."+inputFormat.extension).split(".").slice(0, -1).join(".");
         
+            // Add files to archive
             let iterations = 0;
             for (const file of inputFiles) {
                 if (outputFormat.internal === "cbz") {
