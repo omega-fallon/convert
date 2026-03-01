@@ -42,7 +42,7 @@ class comicsHandler implements FormatHandler {
         const outputFiles: FileData[] = [];
         
         // Some code copied from wad.ts
-        if ((inputFormat.internal === "png" || inputFormat.internal === "jpg" || inputFormat.internal === "webp" || inputFormat.internal === "bmp" || inputFormat.internal === "tiff" || inputFormat.internal === "gif") && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
+        if ((inputFormat.internal === "png" || inputFormat.internal === "jpg" || inputFormat.internal === "jpeg" || inputFormat.internal === "webp" || inputFormat.internal === "bmp" || inputFormat.internal === "tiff" || inputFormat.internal === "gif") && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
             const zip = new JSZip();
             
             // Determine the archive name
