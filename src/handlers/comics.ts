@@ -25,7 +25,7 @@ class comicsHandler implements FormatHandler {
                 format: "cbz",
                 extension: "cbz",
                 mime: "application/vnd.comicbook+zip",
-                from: true,
+                from: false,
                 to: true,
                 internal: "cbz",
             },

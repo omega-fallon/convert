@@ -49,7 +49,7 @@ const CommonFormats = {
         Category.IMAGE
     ),
     BMP: new FormatDefinition(
-        "BMP",
+        "Microsoft Windows bitmap image",
         "bmp",
         "bmp",
         "image/bmp",
@@ -117,14 +117,14 @@ const CommonFormats = {
         "markdown",
         "markdown",
         "text/markdown",
-        ["document", "text"]
+        [Category.DOCUMENT, Category.TEXT]
     ),
     BATCH: new FormatDefinition(
         "Windows Batch file",
         "batch",
         "bat",
         "text/windows-batch",
-        ["text"]
+        Category.TEXT
     ),
     PYTHON: new FormatDefinition(
         "Python Script",
