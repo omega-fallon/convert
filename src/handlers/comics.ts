@@ -19,7 +19,7 @@ class comicsHandler implements FormatHandler {
             CommonFormats.TIFF.supported("tiff", true, false),
             CommonFormats.GIF.supported("gif", true, false),
             
-            CommonFormats.ZIP.supported("zip", true, true),
+            CommonFormats.ZIP.supported("zip", false, true),
             {
                 name: "Comic Book Archive (ZIP)",
                 format: "cbz",
