@@ -41,6 +41,20 @@ const CommonFormats = {
         "image/webp",
         Category.IMAGE
     ),
+    TIFF: new FormatDefinition(
+        "Tagged Image File Format",
+        "tiff",
+        "tiff",
+        "image/tiff",
+        Category.IMAGE
+    ),
+    BMP: new FormatDefinition(
+        "BMP",
+        "bmp",
+        "bmp",
+        "image/bmp",
+        Category.IMAGE
+    ),
     GIF: new FormatDefinition(
         "CompuServe Graphics Interchange Format (GIF)",
         "gif",
