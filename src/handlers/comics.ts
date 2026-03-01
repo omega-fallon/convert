@@ -12,20 +12,20 @@ class comicsHandler implements FormatHandler {
 
     async init () {
         this.supportedFormats = [
-            CommonFormats.PNG.supported("png", true, false),
-            CommonFormats.JPEG.supported("jpeg", true, false),
-            CommonFormats.WEBP.supported("webp", true, false),
-            CommonFormats.BMP.supported("bmp", true, false),
-            CommonFormats.TIFF.supported("tiff", true, false),
-            CommonFormats.GIF.supported("gif", true, false),
+            CommonFormats.PNG.supported("png", true, true),
+            CommonFormats.JPEG.supported("jpeg", true, true),
+            CommonFormats.WEBP.supported("webp", true, true),
+            CommonFormats.BMP.supported("bmp", true, true),
+            CommonFormats.TIFF.supported("tiff", true, true),
+            CommonFormats.GIF.supported("gif", true, true),
             
-            CommonFormats.ZIP.supported("zip", false, true),
+            CommonFormats.ZIP.supported("zip", true, true),
             {
                 name: "Comic Book Archive (ZIP)",
                 format: "cbz",
                 extension: "cbz",
                 mime: "application/vnd.comicbook+zip",
-                from: false,
+                from: true,
                 to: true,
                 internal: "cbz",
             },
@@ -62,6 +62,37 @@ class comicsHandler implements FormatHandler {
             
             const output = await zip.generateAsync({ type: "uint8array" });
             outputFiles.push({ bytes: output, name: baseName + "." + outputFormat.extension });
+        }
+        // Some code copied from lzh.ts
+        else if ((inputFormat.internal === "cbz" || inputFormat.internal === "zip") && (outputFormat.internal === "png" || outputFormat.internal === "jpg" || outputFormat.internal === "jpeg" || outputFormat.internal === "webp" || outputFormat.internal === "bmp" || outputFormat.internal === "tiff" || outputFormat.internal === "gif")) {
+            for (const file of inputFiles) {
+                const zip = new JSZip();
+                await zip.loadAsync(file.bytes);
+
+                // Extract all files from ZIP
+                for (const [filename, zipEntry] of Object.entries(zip.files)) {
+                    if (!zipEntry.dir) {
+                        if (filename.endsWith(outputFormat.extension)) {
+                            const data = await zipEntry.async("uint8array");
+                            outputFiles.push({
+                                name: filename,
+                                bytes: data,
+                            });
+                        }
+                        else if (inputFormat.internal === "cbz" && filename.endsWith(".xml")) {
+                            // Do nothing. This is an exception to the rule.
+                        }
+                        else {
+                            throw new Error("Archive contains multiple file types, abort.");
+                        }
+                    }
+                }
+            }
+            
+            // Throw error if empty
+            if (outputFiles.length === 0) {
+                throw new Error("No applicable files to unzip found.");
+            }
         }
         else {
             throw new Error("Invalid input-output.");
