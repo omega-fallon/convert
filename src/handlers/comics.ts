@@ -43,6 +43,10 @@ class comicsHandler implements FormatHandler {
         
         // Some code copied from wad.ts
         if ((inputFormat.internal === "png" || inputFormat.internal === "jpg" || inputFormat.internal === "jpeg" || inputFormat.internal === "webp" || inputFormat.internal === "bmp" || inputFormat.internal === "tiff" || inputFormat.internal === "gif") && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
+            if (inputFormat.internal === "gif" && outputFormat.internal === "cbz" && inputFiles.length === 1) {
+                throw new Error("User probably intends for a zip of video/gif frames; abort.");
+            }
+            
             const zip = new JSZip();
             
             // Determine the archive name
@@ -83,7 +87,7 @@ class comicsHandler implements FormatHandler {
                             // Do nothing. This is an exception to the rule.
                         }
                         else {
-                            throw new Error("Archive contains multiple file types, abort.");
+                            throw new Error("Archive contains multiple file types; abort.");
                         }
                     }
                 }
