@@ -4,6 +4,8 @@ import type { FileData, FileFormat, FormatHandler } from "../FormatHandler.ts";
 import CommonFormats from "src/CommonFormats.ts";
 import JSZip from "jszip";
 
+const image_list = ["png","jpg","webp","bmp","tiff","gif"];
+
 class comicsHandler implements FormatHandler {
 
     public name: string = "comics";
@@ -13,7 +15,7 @@ class comicsHandler implements FormatHandler {
     async init () {
         this.supportedFormats = [
             CommonFormats.PNG.supported("png", true, true),
-            CommonFormats.JPEG.supported("jpeg", true, true),
+            CommonFormats.JPEG.supported("jpg", true, true),
             CommonFormats.WEBP.supported("webp", true, true),
             CommonFormats.BMP.supported("bmp", true, true),
             CommonFormats.TIFF.supported("tiff", true, true),
@@ -42,7 +44,7 @@ class comicsHandler implements FormatHandler {
         const outputFiles: FileData[] = [];
         
         // Some code copied from wad.ts
-        if ((inputFormat.internal === "png" || inputFormat.internal === "jpg" || inputFormat.internal === "jpeg" || inputFormat.internal === "webp" || inputFormat.internal === "bmp" || inputFormat.internal === "tiff" || inputFormat.internal === "gif") && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
+        if ((image_list.includes(inputFormat.internal)) && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
             if (inputFormat.internal === "gif" && outputFormat.internal === "cbz" && inputFiles.length === 1) {
                 throw new Error("User probably intends for a zip of video/gif frames; abort.");
             }
@@ -68,7 +70,7 @@ class comicsHandler implements FormatHandler {
             outputFiles.push({ bytes: output, name: baseName + "." + outputFormat.extension });
         }
         // Some code copied from lzh.ts
-        else if ((inputFormat.internal === "cbz" || inputFormat.internal === "zip") && (outputFormat.internal === "png" || outputFormat.internal === "jpg" || outputFormat.internal === "jpeg" || outputFormat.internal === "webp" || outputFormat.internal === "bmp" || outputFormat.internal === "tiff" || outputFormat.internal === "gif")) {
+        else if ((inputFormat.internal === "cbz" || inputFormat.internal === "zip") && (image_list.includes(outputFormat.internal))) {
             for (const file of inputFiles) {
                 const zip = new JSZip();
                 await zip.loadAsync(file.bytes);
