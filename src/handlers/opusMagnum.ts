@@ -180,9 +180,6 @@ class opusMagnumHandler implements FormatHandler {
     public name: string = "opusMagnum";
     public supportedFormats?: FileFormat[];
     public ready: boolean = false;
-
-    #canvas?: HTMLCanvasElement;
-    #ctx?: CanvasRenderingContext2D;
     
     async init () {
         this.supportedFormats = [
@@ -199,9 +196,6 @@ class opusMagnumHandler implements FormatHandler {
             },
         ];
 
-        this.#canvas = document.createElement("canvas");
-        this.#ctx = this.#canvas.getContext("2d") || undefined;
-
         this.ready = true;
     }
 
@@ -211,10 +205,6 @@ class opusMagnumHandler implements FormatHandler {
         outputFormat: FileFormat
     ): Promise<FileData[]> {
         const outputFiles: FileData[] = [];
-        
-        if (!this.#canvas || !this.#ctx) {
-            throw "Handler not initialized.";
-        }
         
         if (inputFormat.internal === "puzzle" && outputFormat.internal === "svg") {
             for (const file of inputFiles) {
