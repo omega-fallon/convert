@@ -85,50 +85,86 @@ class ImageMagickHandler implements FormatHandler {
     inputFormat: FileFormat,
     outputFormat: FileFormat
   ): Promise<FileData[]> {
-    const outputFiles: FileData[] = [];
 
     const inputMagickFormat = inputFormat.internal as MagickFormat;
     const outputMagickFormat = outputFormat.internal as MagickFormat;
 
     const inputSettings = new MagickReadSettings();
     inputSettings.format = inputMagickFormat;
-
-    for (let i = 0; i < inputFiles.length; i++) {
+    
+    // Dirty fix to allow multiple outputs when appropriate.
+    const multi_image_formats = ["gif","pdf","epdf"];
+    
+    if (multi_image_formats.includes(outputFormat.extension)) {
+      console.log("Running ImageMagick in single-output mode.");
       const bytes: Uint8Array = await new Promise(resolve => {
         MagickImageCollection.use(outputCollection => {
-          if (inputFormat.format === "rgb") {
-            // Guess how big the Image should be
-            inputSettings.width = Math.sqrt(inputFiles[i].bytes.length / 3);
-            inputSettings.height = inputSettings.width;
-          }
-            
-          MagickImageCollection.use(fileCollection => {
-            fileCollection.read(inputFiles[i].bytes, inputSettings);
-            while (fileCollection.length > 0) {
-              const image = fileCollection.shift();
-              if (!image) break;
-
-              if(outputFormat.format === "ico" && (image.width > 256 || image.height > 256)) {
-                const geometry = new MagickGeometry(256, 256);
-                image.resize(geometry);
-              }
-
-              outputCollection.push(image);
+          for (const inputFile of inputFiles) {
+            if (inputFormat.format === "rgb") {
+              // Guess how big the Image should be
+              inputSettings.width = Math.sqrt(inputFile.bytes.length / 3);
+              inputSettings.height = inputSettings.width;
             }
-          });
-              
+            MagickImageCollection.use(fileCollection => {
+              fileCollection.read(inputFile.bytes, inputSettings);
+              while (fileCollection.length > 0) {
+                const image = fileCollection.shift();
+                if (!image) break;
+                outputCollection.push(image);
+              }
+            });
+          }
           outputCollection.write(outputMagickFormat, (bytes) => {
             resolve(new Uint8Array(bytes));
           });
         });
       });
 
-      const baseName = inputFiles[i].name.split(".")[0];
+      const baseName = inputFiles[0].name.split(".").slice(0, -1).join(".");
       const name = baseName + "." + outputFormat.extension;
-      outputFiles.push({ bytes, name });
+      return [{ bytes, name }];
+    }
+    else {
+      console.log("Running ImageMagick in multi-output mode.");
+      let outputFiles: FileData[] = [];
+      for (let i = 0; i < inputFiles.length; i++) {
+        const bytes: Uint8Array = await new Promise(resolve => {
+          MagickImageCollection.use(outputCollection => {
+            if (inputFormat.format === "rgb") {
+              // Guess how big the Image should be
+              inputSettings.width = Math.sqrt(inputFiles[i].bytes.length / 3);
+              inputSettings.height = inputSettings.width;
+            }
+            
+            MagickImageCollection.use(fileCollection => {
+              fileCollection.read(inputFiles[i].bytes, inputSettings);
+              while (fileCollection.length > 0) {
+                const image = fileCollection.shift();
+                if (!image) break;
+
+                if(outputFormat.format === "ico" && (image.width > 256 || image.height > 256)) {
+                  const geometry = new MagickGeometry(256, 256);
+                  image.resize(geometry);
+                }
+
+                outputCollection.push(image);
+              }
+            });
+              
+            outputCollection.write(outputMagickFormat, (bytes) => {
+              resolve(new Uint8Array(bytes));
+            });
+          });
+        });
+
+        const baseName = inputFiles[i].name.split(".")[0];
+        const name = baseName + "." + outputFormat.extension;
+        outputFiles.push({ bytes, name });
+      }
+
+      return outputFiles
     }
 
-    return outputFiles
   }
 
 }
