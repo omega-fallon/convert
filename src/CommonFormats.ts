@@ -69,6 +69,13 @@ const CommonFormats = {
         "image/svg+xml",
         [Category.IMAGE, Category.VECTOR, Category.DOCUMENT]
     ),
+    ICO: new FormatDefinition(
+        "Microsoft Windows ICO",
+        "ico",
+        "ico",
+        "image/vnd.microsoft.icon",
+        [Category.IMAGE]
+    ),
     // texts
     JSON: new FormatDefinition(
         "JavaScript Object Notation",
