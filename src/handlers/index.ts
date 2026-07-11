@@ -10,7 +10,7 @@ import curaniHandler from "./curani.ts";
 import bunburrowsHandler from "./bunburrows.ts";
 import rgbaHandler from "./rgba.ts";
 import svgTraceHandler from "./svgTrace.ts";
-import { comicsZipPackerHandler, comicsZipUnpackerHandler comicsTarUnpackerHandler } from "./comics.ts";
+import { comicsZipPackerHandler, comicsZipUnpackerHandler, comicsTarUnpackerHandler } from "./comics.ts";
 import { renameZipHandler, renameRarHandler, renameTarHandler, rename7zHandler, renameTxtHandler, renameJsonHandler } from "./rename.ts";
 import envelopeHandler from "./envelope.ts";
 import pandocHandler from "./pandoc.ts";
