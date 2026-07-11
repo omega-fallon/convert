@@ -29,7 +29,6 @@ export class comicsZipPackerHandler implements FormatHandler {
             CommonFormats.TIFF.supported("tiff", true, false),
             CommonFormats.GIF.supported("gif", true, false),
             
-            CommonFormats.ZIP.supported("zip", false, true),
             {
                 name: "Comic Book Archive (ZIP)",
                 format: "cbz",
@@ -53,32 +52,30 @@ export class comicsZipPackerHandler implements FormatHandler {
     ): Promise<FileData[]> {
         const outputFiles: FileData[] = [];
         
-        // Base name for imgs -> archive
-        const baseName = inputFiles[0].name.replace("_0."+inputFormat.extension,"."+inputFormat.extension).split(".").slice(0, -1).join(".");
-        
-        // Single-gif catching
-        if (inputFormat.internal === "gif" && (outputFormat.internal === "cbz" || outputFormat.internal === "zip") && inputFiles.length === 1) {
-            throw new TypeError("User probably intends for an archive of video/gif frames; abort.");
-        }
-        
         // Pack a zip/cbz with code copied from wad.ts
-        if ((image_list.includes(inputFormat.internal)) && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
+        if ((image_list.includes(inputFormat.internal)) && outputFormat.internal === "cbz") {
+            // Single-gif catching
+            if (inputFormat.internal === "gif" && inputFiles.length === 1) {
+                throw new TypeError("User probably intends for an archive of video/gif frames; abort.");
+            }
+
+            // Base name for imgs -> archive
+            const baseName = inputFiles[0].name.replace("_0."+inputFormat.extension,"."+inputFormat.extension).split(".").slice(0, -1).join(".");
+
             const zip = new JSZip();
         
             // Add files to archive
             let iterations = 0;
             for (const file of inputFiles) {
-                if (outputFormat.internal === "cbz") {
-                    zip.file("Page "+String(iterations)+"."+inputFormat.extension, file.bytes);
-                }
-                else {
-                    zip.file(file.name, file.bytes);
-                }
+                zip.file("Page "+String(iterations)+"."+inputFormat.extension, file.bytes);
                 iterations += 1;
             }
             
             const output = await zip.generateAsync({ type: "uint8array" });
             outputFiles.push({ bytes: output, name: baseName + "." + outputFormat.extension });
+        }
+        else {
+            throw new TypeError(`Unsupported conversion path: ${inputFormat.internal} -> ${outputFormat.internal}`);
         }
         
         return outputFiles;
@@ -155,7 +152,7 @@ export class comicsZipUnpackerHandler implements FormatHandler {
             }
         }
         else {
-            throw new Error("Invalid input-output.");
+            throw new TypeError(`Unsupported conversion path: ${inputFormat.internal} -> ${outputFormat.internal}`);
         }
         
         return outputFiles;
