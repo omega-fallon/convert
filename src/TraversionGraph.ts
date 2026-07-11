@@ -70,9 +70,8 @@ export class TraversionGraph {
         { categories: ["audio", "video", "image"], cost: 10000 }, // Converting from audio to image through video is especially lossy
         
         { categories: ["archive", "image", "archive"], cost: 10000 }, // If archive -> archive is possible directly, it should be prioritized pretty much always.
-        { categories: ["image archive", "image", "image archive"], cost: 10000 }, // As above
-        { categories: ["archive", "image", "image archive"], cost: 10000 }, // As above
-        { categories: ["image archive", "image", "archive"], cost: 10000 }, // As above
+        { categories: ["image archive", "image", "image archive"], cost: 10000 }, // As above, but for image archives
+        { categories: ["image archive", "image", "archive"], cost: 10000 }, // We should never have to do this. The reverse, however, is necessary.
     ];
     // Keeps track of path segments that have failed when attempted during the last run
     private temporaryDeadEnds: ConvertPathNode[][] = [];
