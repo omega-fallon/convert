@@ -68,7 +68,12 @@ export class comicsZipPackerHandler implements FormatHandler {
             // Add files to archive
             let iterations = 0;
             for (const file of inputFiles) {
-                zip.file("Page "+String(iterations)+"."+inputFormat.extension, file.bytes);
+                if (outputFormat.internal === "cbz") {
+                    zip.file("Page "+String(iterations)+"."+inputFormat.extension, file.bytes);
+                }
+                else {
+                    zip.file(file.name, file.bytes);
+                }
                 iterations += 1;
             }
             
