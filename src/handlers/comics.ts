@@ -29,6 +29,7 @@ export class comicsZipPackerHandler implements FormatHandler {
             CommonFormats.TIFF.supported("tiff", true, false),
             CommonFormats.GIF.supported("gif", true, false),
             
+            CommonFormats.ZIP.supported("zip", false, true),
             {
                 name: "Comic Book Archive (ZIP)",
                 format: "cbz",
@@ -53,7 +54,7 @@ export class comicsZipPackerHandler implements FormatHandler {
         const outputFiles: FileData[] = [];
         
         // Pack a zip/cbz with code copied from wad.ts
-        if ((image_list.includes(inputFormat.internal)) && outputFormat.internal === "cbz") {
+        if ((image_list.includes(inputFormat.internal)) && (outputFormat.internal === "cbz" || outputFormat.internal === "zip")) {
             // Single-gif catching
             if (inputFormat.internal === "gif" && inputFiles.length === 1) {
                 throw new TypeError("User probably intends for an archive of video/gif frames; abort.");
