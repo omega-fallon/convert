@@ -29,7 +29,7 @@ export class comicsZipPackerHandler implements FormatHandler {
             CommonFormats.TIFF.supported("tiff", true, false),
             CommonFormats.GIF.supported("gif", true, false),
             
-            CommonFormats.ZIP.supported("zip", false, true),
+            CommonFormats.ZIP.supported("zip", false, true, true),
             {
                 name: "Comic Book Archive (ZIP)",
                 format: "cbz",
