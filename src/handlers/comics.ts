@@ -16,7 +16,7 @@ import JSZip from "jszip";
 const image_list = ["png","jpg","webp","bmp","tiff","gif"];
 
 export class comicsZipPackerHandler implements FormatHandler {
-    public name: string = "comicsZipUnpacker";
+    public name: string = "comicsZipPacker";
     public supportedFormats?: FileFormat[];
     public ready: boolean = false;
 

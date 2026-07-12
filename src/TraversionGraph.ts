@@ -72,6 +72,7 @@ export class TraversionGraph {
         { categories: ["archive", "image", "archive"], cost: 10000 }, // If archive -> archive is possible directly, it should be prioritized pretty much always.
         { categories: ["image archive", "image", "image archive"], cost: 10000 }, // As above, but for image archives
         { categories: ["image archive", "image", "archive"], cost: 10000 }, // We should never have to do this. The reverse, however, is necessary.
+        { categories: ["image", "image archive", "archive"], cost: 10000 }, // Results in unnecessary page-naming.
     ];
     // Keeps track of path segments that have failed when attempted during the last run
     private temporaryDeadEnds: ConvertPathNode[][] = [];
