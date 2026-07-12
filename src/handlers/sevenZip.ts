@@ -10,6 +10,16 @@ const defaultSevenZipOptions = {
   locateFile: () => "/convert/wasm/7zz.wasm"
 }
 
+function padNumberString(num: number, digits: number): string {
+  let str = String(num);
+
+  while (str.length < digits) {
+    str = "0"+str;
+  }
+
+  return str;
+}
+
 class sevenZipHandler implements FormatHandler {
 
   public name: string = "sevenZip";
@@ -251,9 +261,10 @@ class sevenZipHandler implements FormatHandler {
 
       sevenZip.FS.mkdir("data");
       sevenZip.FS.chdir("data");
+      const necessaryDigits = String(inputFiles.length-1).length;
       for (let i = 0; i < inputFiles.length; i++) {
         if (outputFormat.mime.includes("comicbook")) {
-          sevenZip.FS.writeFile("Page "+String(i)+"."+inputFormat.extension, inputFiles[i].bytes);
+          sevenZip.FS.writeFile(padNumberString(i,necessaryDigits)+"."+inputFormat.extension, inputFiles[i].bytes);
         }
         else {
           sevenZip.FS.writeFile(inputFiles[i].name, inputFiles[i].bytes);

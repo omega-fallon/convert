@@ -15,6 +15,16 @@ import JSZip from "jszip";
 
 const image_list = ["png","jpg","webp","bmp","tiff","gif"];
 
+function padNumberString(num: number, digits: number): string {
+  let str = String(num);
+
+  while (str.length < digits) {
+    str = "0"+str;
+  }
+
+  return str;
+}
+
 export class comicsZipPackerHandler implements FormatHandler {
     public name: string = "comicsZipPacker";
     public supportedFormats?: FileFormat[];
@@ -66,10 +76,11 @@ export class comicsZipPackerHandler implements FormatHandler {
             const zip = new JSZip();
         
             // Add files to archive
+            const necessaryDigits = String(inputFiles.length-1).length;
             let iterations = 0;
             for (const file of inputFiles) {
                 if (outputFormat.internal === "cbz") {
-                    zip.file("Page "+String(iterations)+"."+inputFormat.extension, file.bytes);
+                    zip.file(padNumberString(iterations,necessaryDigits)+"."+inputFormat.extension, file.bytes);
                 }
                 else {
                     zip.file(file.name, file.bytes);
